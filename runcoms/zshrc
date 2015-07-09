@@ -11,3 +11,169 @@ if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
 fi
 
 # Customize to your needs...
+
+# Aliases
+#----------
+# Thanks to https://bbs.archlinux.org/viewtopic.php?id=97980 for betting directory navigation
+preexec() { LS_USED=$(echo $1|cut -d' ' -f1) }
+chpwd() {
+  case "$LS_USED" in
+    cd)     ls --color=auto --group-directories-first -hF;;
+    cdl)     ls --color=auto --group-directories-first -hlF;;
+    cda)     ls --color=auto --group-directories-first -hlAF;;
+    cdd)     ls --color=auto -d *(-/N);;
+    cdf)     ls --color=auto *(-.N);;
+    cdad)    ls --color=auto -d *(-/DN);;
+    cdaf)    ls --color=auto *(-.DN);;
+    cdbig)   ls --color=auto -lArSh;;
+    cdnew)   ls --color=auto -lAhrt;;
+    cdold)   ls --color=auto -lAht;;
+    cdsmall) ls --color=auto -lASh;;
+    *) ls --color=auto --group-directories-first -hF;;
+  esac
+}
+alias {cd,cda,cdl,cdd,cdf,cdad,cdaf,cdbig,cdnew,cdold,cdsmall}='cd'
+
+alias rm='rm -i'
+alias mv='mv -i'
+alias cp='cp -i'
+
+alias cl='cd'
+
+alias ec='$HOME/.program_files/eclipse/eclipse'
+
+export CMAKE_ROOT=/usr/local/share/cmake-3.2
+
+# Ruby
+#---------
+# rbenv path
+export PATH="$HOME/.rbenv/bin:$PATH"
+# Start rbenv (enable ruby)
+eval "$(rbenv init -)"
+
+# SVN
+#-------
+export SVN_EDITOR=vim
+
+# J executable path
+PATH=$PATH:$HOME/.program_files/j64-701/bin
+
+# User specific environment and startup programs (can be nested)
+PATH="${PATH}$(find $HOME/bin -name '.*' -prune -o -type d -printf ':%p')"
+
+alias st=subl
+
+# YVD path
+alias yvd='wine $HOME/c/Program\ Files\ \(x86\)/Yugioh\ Virtual\ Dueling/Yugioh\ Virtual\ Desktop\ 9.exe'
+
+# PDF-XChange Viewer
+alias openpdf='wine $HOME/.program_files/PDFX_Vwr_Port/PDFXCview.exe'
+
+# Resoph Notes
+alias notes='wine $HOME/.program_files/ResophNotes/ResophNotes.exe'
+
+# Easy passwordless ssh
+function passless() {
+    pub_key=$@[1]
+    target=$@[2]
+
+    echo -n "Copying the contents of $pub_key to $target..."
+    cat $pub_key | ssh $target 'cat >> ~/.ssh/authorized_keys' && echo 'Done'
+}
+
+# Open file browser from terminal
+alias fbrowser=nautilus
+
+# Open internet browser
+alias browser=sensible-browser
+
+# Open with default program
+alias fopen=xdg-open
+
+# Pry with Rails environment. Must be run in Rails app root.
+alias pryr="pry -r ./config/environment -r rails/console/app -r rails/console/helpers"
+
+# Show files untracked by git
+alias guf='git ls-files --other --exclude-standard'
+
+# Convenient timer
+alias de='climer "2 hours" "30 minutes" "30 minutes"'
+
+# Encryption convenience aliases
+alias lock='fusermount -u'
+alias unlock='encfs'
+alias unlockv='sudo encfs -o allow_other'
+
+# Machine specific aliases
+aliases_file=$HOME/.aliases
+if [[ -e $aliases_file ]]
+then
+  source $aliases_file
+fi
+ssh_agent_file=$HOME/.autostart_ssh_agent.sh
+if [[ -e $ssh_agent_file ]]
+then
+  source $ssh_agent_file
+fi
+
+# Gnuplot 5 rc2
+PATH=$PATH:/usr/local/bin
+
+# Java
+PATH=$PATH:$HOME/.program_files/jdk1.7.0_21/bin
+
+# Set path to world-machine
+export WORLD_MACHINE=$HOME/.world-machine
+
+# Fix CTRL + arrow key
+bindkey '5D' emacs-backward-word
+bindkey '5C' emacs-forward-word
+export WORDCHARS=''
+
+# User specific environment and startup programs
+# Can be nested with directories or symbolic links
+PATH="${PATH}$(find $HOME/bin -name '.*' -prune -o -type d -printf ':%p')$(find $HOME/bin -name '.*' -prune -o -type l -printf ':%p')"
+
+# Copy and move with progress bars.
+# Careful though, no prompt for overwrite.
+alias rscp='rsync -aP'
+alias rsmv='rsync -aP --remove-source-files'
+
+#alias make='colormake'
+
+# Fix CTRL+<arrow key>
+bindkey "^[[1;5D" emacs-backward-word
+bindkey "^[[1;5C" emacs-forward-word
+
+export CCRG_HOME=~/workspace/curling
+export PATH=$CCRG_HOME/bin:$PATH
+
+#alias vim="stty stop '' -ixoff ; vim"
+# `Frozing' tty, so after any command terminal settings will be restored
+#ttyctl -f
+stty -ixon
+
+# Fixes deleting above rows when prompt takes up an extra line
+# @todo Doesn't work when prompt takes up exactly 1 extra line
+zle-keymap-select () {
+  setopt localoptions no_ksharrays
+  [[ "${@[2]-}" == opp ]] && return
+  # TODO: please modify the prompt here!
+  zle reset-prompt
+}
+zle -N zle-keymap-select
+# added by Miniconda3 3.10.1 installer
+#export PATH=/home/dmorrill/.program_files/miniconda3/bin:$PATH
+
+#export PATH=$HOME/.nix-profile/bin:$PATH
+
+export CUDA_HOME=/usr/local/cuda-7.0
+export LD_LIBRARY_PATH=${CUDA_HOME}/lib64:${LD_LIBRARY_PATH}
+export PATH=${CUDA_HOME}/bin:${PATH}
+
+export ARRAY_FIRE_HOME=~/.program_files/arrayfire-3
+export LD_LIBRARY_PATH=${ARRAY_FIRE_HOME}/lib:${LD_LIBRARY_PATH}
+export C_INCLUDE_PATH=${ARRAY_FIRE_HOME}/include:${C_INCLUDE_PATH}
+export CPLUS_INCLUDE_PATH=${ARRAY_FIRE_HOME}/include:${CPLUS_INCLUDE_PATH}
+
+export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
