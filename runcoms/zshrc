@@ -3,8 +3,23 @@ if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
   source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
 fi
 
+mac_core_utils_bin="/usr/local/opt/coreutils/libexec/gnubin"
+if [[ -e $mac_core_utils_bin ]]
+then
+  PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
+fi
+mac_core_utils_man="/usr/local/opt/coreutils/libexec/gnuman"
+if [[ -e $mac_core_utils_man ]]
+then
+  MANPATH="/usr/local/opt/coreutils/libexec/gnuman:$MANPATH"
+fi
+
+alias ls='ls --color=auto --group-directories-first -hF'
+
+export CONFIG_HOME=$HOME/.config
+
 # Set path to world-machine
-export WORLD_MACHINE=$HOME/.config/world-machine
+export WORLD_MACHINE=$CONFIG_HOME/world-machine
 
 RB_ENV="$WORLD_MACHINE/ruby/environment.sh"
 if [[ -s "$RB_ENV" ]]; then
@@ -13,6 +28,10 @@ fi
 PY_ENV="$WORLD_MACHINE/python/environment.sh"
 if [[ -s "$PY_ENV" ]]; then
   source "$PY_ENV"
+fi
+HS_ENV="$WORLD_MACHINE/haskell/environment.sh"
+if [[ -s "$HS_ENV" ]]; then
+  source "$HS_ENV"
 fi
 EXTRA_ENV="$HOME/.extrarc"
 if [[ -s "$EXTRA_ENV" ]]; then
@@ -59,7 +78,8 @@ export SVN_EDITOR=vim
 
 # User specific environment and startup programs
 # Can be nested with directories or symbolic links
-PATH="${PATH}$(find $HOME/bin -name '.*' -prune -o -type d -printf ':%p')$(find $HOME/bin -name '.*' -prune -o -type l -printf ':%p')"
+export PATH="$(find $HOME/bin -name '.*' -prune -o -type d -follow -printf ':%p')$(find $HOME/bin -name '.*' -prune -o -type l -follow -printf ':%p')${PATH}"
+
 
 # Easy passwordless ssh
 function passless() {
