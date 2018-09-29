@@ -3,17 +3,6 @@ if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
   source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
 fi
 
-mac_core_utils_bin="/usr/local/opt/coreutils/libexec/gnubin"
-if [[ -e $mac_core_utils_bin ]]
-then
-  PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
-fi
-mac_core_utils_man="/usr/local/opt/coreutils/libexec/gnuman"
-if [[ -e $mac_core_utils_man ]]
-then
-  MANPATH="/usr/local/opt/coreutils/libexec/gnuman:$MANPATH"
-fi
-
 alias ls='ls --color=auto --group-directories-first -hF'
 
 export CONFIG_HOME=$HOME/.config
@@ -21,6 +10,10 @@ export CONFIG_HOME=$HOME/.config
 # Set path to world-machine
 export WORLD_MACHINE=$CONFIG_HOME/world-machine
 
+EXTRA_ENV="$HOME/.extrarc"
+if [[ -s "$EXTRA_ENV" ]]; then
+  source "$EXTRA_ENV"
+fi
 RB_ENV="$WORLD_MACHINE/ruby/environment.sh"
 if [[ -s "$RB_ENV" ]]; then
   source "$RB_ENV"
@@ -33,14 +26,6 @@ HS_ENV="$WORLD_MACHINE/haskell/environment.sh"
 if [[ -s "$HS_ENV" ]]; then
   source "$HS_ENV"
 fi
-EXTRA_ENV="$HOME/.extrarc"
-if [[ -s "$EXTRA_ENV" ]]; then
-  source "$EXTRA_ENV"
-fi
-
-export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
-
-PATH=$PATH:/usr/local/bin
 
 # Customize to your needs...
 
