@@ -3,13 +3,14 @@ if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
   source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
 fi
 
-alias ls='ls --color=auto --group-directories-first -hF'
-
 export CONFIG_HOME=$HOME/.config
-
-# Set path to world-machine
 export WORLD_MACHINE=$CONFIG_HOME/world-machine
+source "$WORLD_MACHINE/terminal/environment.sh"
 
+ZSH_ENV="$WORLD_MACHINE/zsh/environment.sh"
+if [[ -s "$ZSH_ENV" ]]; then
+  source "$ZSH_ENV"
+fi
 EXTRA_ENV="$HOME/.extrarc"
 if [[ -s "$EXTRA_ENV" ]]; then
   source "$EXTRA_ENV"
@@ -22,100 +23,3 @@ PY_ENV="$WORLD_MACHINE/python/environment.sh"
 if [[ -s "$PY_ENV" ]]; then
   source "$PY_ENV"
 fi
-HS_ENV="$WORLD_MACHINE/haskell/environment.sh"
-if [[ -s "$HS_ENV" ]]; then
-  source "$HS_ENV"
-fi
-
-# Customize to your needs...
-
-# Aliases
-#----------
-# Thanks to https://bbs.archlinux.org/viewtopic.php?id=97980 for better directory navigation
-preexec() { LS_USED=$(echo $1|cut -d' ' -f1) }
-chpwd() {
-  case "$LS_USED" in
-    cd)     ls --color=auto --group-directories-first -hF;;
-    cdl)     ls --color=auto --group-directories-first -hlF;;
-    cda)     ls --color=auto --group-directories-first -hlAF;;
-    cdd)     ls --color=auto -d *(-/N);;
-    cdf)     ls --color=auto *(-.N);;
-    cdad)    ls --color=auto -d *(-/DN);;
-    cdaf)    ls --color=auto *(-.DN);;
-    cdbig)   ls --color=auto -lArSh;;
-    cdnew)   ls --color=auto -lAhrt;;
-    cdold)   ls --color=auto -lAht;;
-    cdsmall) ls --color=auto -lASh;;
-    *) ls --color=auto --group-directories-first -hF;;
-  esac
-}
-alias {cl,cd,cda,cdl,cdd,cdf,cdad,cdaf,cdbig,cdnew,cdold,cdsmall}='cd'
-
-alias rm='rm -i'
-alias mv='mv -i'
-alias cp='cp -i'
-
-
-export EDITOR=subl
-export SELECTED_EDITOR=$EDITOR
-
-export SVN_EDITOR=vim
-
-# User specific environment and startup programs
-# Can be nested with directories or symbolic links
-export PATH="$(find $HOME/bin -name '.*' -prune -o -type d -follow -printf ':%p')$(find $HOME/bin -name '.*' -prune -o -type l -follow -printf ':%p')${PATH}"
-
-
-# Easy passwordless ssh
-function passless() {
-    pub_key=$@[1]
-    target=$@[2]
-
-    echo -n "Copying the contents of $pub_key to $target..."
-    cat $pub_key | ssh $target 'cat >> ~/.ssh/authorized_keys' && echo 'Done'
-}
-
-# Open file browser from terminal
-alias fbrowser=nautilus
-
-# Open internet browser
-alias browser=sensible-browser
-
-# Open with default program
-alias fopen=xdg-open
-
-# Show files untracked by git
-alias guf='git ls-files --other --exclude-standard'
-
-# Encryption convenience aliases
-alias lock='fusermount -u'
-alias unlock='encfs'
-alias unlockv='sudo encfs -o allow_other'
-
-# Machine specific aliases
-aliases_file=$HOME/.aliases
-if [[ -e $aliases_file ]]
-then
-  source $aliases_file
-fi
-ssh_agent_file=$HOME/.autostart_ssh_agent.sh
-if [[ -e $ssh_agent_file ]]
-then
-  source $ssh_agent_file
-fi
-
-
-# Copy and move with progress bars.
-# Careful though, no prompt for overwrite.
-alias rscp='rsync -aP'
-alias rsmv='rsync -aP --remove-source-files'
-
-# Fix CTRL + arrow key
-bindkey '5D' emacs-backward-word
-bindkey '5C' emacs-forward-word
-export WORDCHARS=''
-
-bindkey "^[[1;5D" emacs-backward-word
-bindkey "^[[1;5C" emacs-forward-word
-
-stty -ixon
